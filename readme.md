@@ -1,0 +1,1 @@
+### personal hyprland setup
