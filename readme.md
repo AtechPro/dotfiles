@@ -38,24 +38,8 @@ stow --version
 
 ---
 
-# 2. Get Your Dotfiles
 
-If stored in Git:
-
-```bash
-git clone https://github.com/yourname/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
-```
-
-If local backup exists:
-
-```bash
-cd /path/to/dotfiles
-```
-
----
-
-# 3. Understand Structure
+# Understand Structure
 
 Stow works by mirroring folder structure into `$HOME`.
 
