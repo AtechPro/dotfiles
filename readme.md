@@ -1,12 +1,12 @@
-# Hyprland Dotfiles Restore Guide (GNU Stow)
+# Dotfiles Restow Guide (GNU Stow)
 
-This guide explains how to restore Hyprland dotfiles using **GNU Stow** across multiple Linux distributions (Arch, Fedora, Ubuntu, etc.).
+This guide explains how to restow dotfiles using **GNU Stow**. These dotfiles include configurations for Fish shell, Hyprland window manager, Kitty terminal, Starship prompt, and various notes.
 
 ---
 
 # 1. Install GNU Stow
 
-### Arch / Manjaro
+### Arch / Manjaro / Ormachry 
 
 ```bash
 sudo pacman -S stow
@@ -63,66 +63,72 @@ Example:
 
 ```
 dotfiles/
+ ├── fish/.config/fish/
  ├── hyprland/.config/hypr/
- ├── waybar/.config/waybar/
  ├── kitty/.config/kitty/
- ├── nvim/.config/nvim/
+ ├── starship/.config/
+ ├── notes/
 ```
 
 Each folder = one module.
 
 ---
 
-# 4. Restore Dotfiles
+# Available Modules
+
+- **fish**: Fish shell configuration files (config.fish, auto-Hypr.fish, fish_variables)
+- **hyprland**: Hyprland window manager configs (hyprland.conf, monitors.conf, workspaces.conf)
+- **kitty**: Kitty terminal emulator settings (kitty.conf, scroll_mark.py, search.py)
+- **starship**: Starship prompt configuration (starship.toml)
+- **notes**: Miscellaneous notes and guides (e.g., grubrecovery.md)
+
+---
+
+# Restow Dotfiles
 
 Run stow per module:
 
 ```bash
+stow fish
 stow hyprland
-stow waybar
 stow kitty
-stow nvim
+stow starship
 ```
 
-This creates symlinks into:
+For notes (if you want them in ~/notes):
 
+```bash
+stow notes
 ```
-~/.config/
-```
+
+This creates symlinks into `~/.config/` and `~/notes/`.
 
 ---
 
-# 5. Safe Preview (Recommended)
+# Safe Preview
 
 Check before applying:
 
 ```bash
+stow -n -v fish
 stow -n -v hyprland
+stow -n -v kitty
+stow -n -v starship
+stow -n -v notes
 ```
 
 ---
 
-# 6. Undo Changes
+# Troubleshooting
 
-Remove symlinks:
+If conflicts occur, remove existing configs first:
 
 ```bash
-stow -D hyprland
+rm -rf ~/.config/fish
+stow fish
 ```
 
----
-
-# 7. Apply Changes to Hyprland
-
-Reload compositor:
-
-```bash
-hyprctl reload
-```
-
-Or logout/login session.
-
----
+For more help: `stow --help`
 
 # 8. Common Problems
 
@@ -179,6 +185,6 @@ hyprctl reload
 * Hyprland-specific commands (like `hyprctl`) require Hyprland session only
 * Stow itself is distro-independent
 * [GRUB Recovery Guide](notes/grubrecovery.md)
+* [Guide of How to install Noctalia](https://docs.noctalia.dev/v4/)
 ---
 
-Done.
