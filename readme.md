@@ -178,7 +178,7 @@ hyprctl reload
 * Works on any Linux distribution (as long as stow is installed)
 * Hyprland-specific commands (like `hyprctl`) require Hyprland session only
 * Stow itself is distro-independent
-
+* [GRUB Recovery Guide](notes/grubrecovery.md)
 ---
 
 Done.
