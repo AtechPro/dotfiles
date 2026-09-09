@@ -195,7 +195,7 @@ hl.animation({ leaf = "zoomFactor",    enabled = true, speed = 7,    bezier = "q
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/
 hl.config({
     dwindle = {
-        pseudotile     = true, -- Master switch for pseudotiling (mainMod + P)
+        -- pseudotile     = true, -- Master switch for pseudotiling (mainMod + P)
         preserve_split = true, -- You probably want this
     },
 })
