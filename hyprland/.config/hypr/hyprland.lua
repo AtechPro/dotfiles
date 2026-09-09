@@ -331,13 +331,12 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 
 ---- Monitor EDP Mode ----
 
--- NOTE: kept as `hyprctl keyword` (runtime, matches old behaviour). May later be
--- replaced with `hyprctl eval 'hl.monitor({ output = "eDP-1", ... })'` if the
--- legacy keyword gets dropped.
-hl.bind("CTRL + SHIFT + ALT + 1", hl.dsp.exec_cmd('hyprctl keyword monitor "eDP-1, 1920x1080@60, 0x0, 1" && notify-send "Display" "Set to 1080p (Battery Saver)"'))
-hl.bind("CTRL + SHIFT + ALT + 2", hl.dsp.exec_cmd('hyprctl keyword monitor "eDP-1, 2560x1440@60, 0x0, 1.33" && notify-send "Display" "Set to 1440p (Balanced)"'))
-hl.bind("CTRL + SHIFT + ALT + 3", hl.dsp.exec_cmd('hyprctl keyword monitor "eDP-1, preferred, 0x0, 2.00, bitdepth, 10, cm, srgb" && notify-send "Display" "Set to UHD"'))
-hl.bind("CTRL + SHIFT + ALT + 4", hl.dsp.exec_cmd('hyprctl keyword monitor "eDP-1, preferred, 0x0, 2.00, bitdepth, 10, cm, dcip3" && notify-send "Display" "Set to colour accuracy mode"'))
+-- hyprctl keyword monitor no longer works on the new (Lua) parser in Hyprland
+-- >= 0.56 ("keyword can't work with non-legacy parsers"), so use hyprctl eval.
+hl.bind("CTRL + SHIFT + ALT + 1", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'1920x1080@60\', position = \'0x0\', scale = 1 })" && notify-send "Display" "Set to 1080p (Battery Saver)"'))
+hl.bind("CTRL + SHIFT + ALT + 2", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'2560x1440@60\', position = \'0x0\', scale = 1.33 })" && notify-send "Display" "Set to 1440p (Balanced)"'))
+hl.bind("CTRL + SHIFT + ALT + 3", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'preferred\', position = \'0x0\', scale = 2, bitdepth = 10, cm = \'srgb\' })" && notify-send "Display" "Set to UHD"'))
+hl.bind("CTRL + SHIFT + ALT + 4", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'preferred\', position = \'0x0\', scale = 2, bitdepth = 10, cm = \'dcip3\' })" && notify-send "Display" "Set to colour accuracy mode"'))
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
