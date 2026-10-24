@@ -18,12 +18,15 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 -- Alternate eDP-1 modes (Battery Saver / Balanced / UHD / Color accuracy):
 --   eDP-1, 2560x1440@60, 0x0, 1.333333333334   # 1440p (Balanced)
+
 --   eDP-1, 3840x2160@60, 0x0, 2                 # 4K (Sharp)
 hl.monitor({
-    output   = "eDP-1",
-    mode     = "1920x1080@60",
+    output = "eDP-1",
+    mode = "2560x1440@60",
+--    mode = "1920x1080@60",
     position = "0x0",
-    scale    = 1,
+    scale = 1.33
+--    scale = 1
 })
 
 hl.monitor({
@@ -376,3 +379,6 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
+-- For Noctalia Color templates
+require("noctalia").apply_theme()
