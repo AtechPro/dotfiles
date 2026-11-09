@@ -60,7 +60,7 @@ Each folder = one module.
 
 # Available Modules
 
-- **fish**: Fish shell configuration files (config.fish, auto-Hypr.fish, fish_variables)
+- **fish**: Fish shell configuration files (config.fish, auto-Hypr.fish, fish_variables, functions/zseed.fish)
 - **hyprland**: Hyprland window manager configs (hyprland.conf, monitors.conf, workspaces.conf)
 - **kitty**: Kitty terminal emulator settings (kitty.conf, scroll_mark.py, search.py)
 - **starship**: Starship prompt configuration (starship.toml)
@@ -100,6 +100,91 @@ stow -n -v kitty
 stow -n -v starship
 stow -n -v notes
 ```
+
+---
+
+# Shell Tooling (installed alongside Stow)
+
+## zoxide — smarter `cd`
+
+Directory jumper that learns which directories you actually use and ranks them by
+frecency (frequency + recency). It is a separate package, not part of this repo:
+
+```bash
+# Arch
+sudo pacman -S zoxide fzf
+
+# Debian / Ubuntu
+sudo apt install zoxide fzf
+```
+
+`fzf` is only needed for the interactive `zi` picker — `z` works without it.
+
+Wiring lives in `fish/.config/fish/config.fish`, inside the interactive guard so
+non-interactive `fish -c` calls don't pay for it:
+
+```fish
+if status is-interactive
+    # Commands to run in interactive sessions can go here
+    set -g fish_greeting ""
+    starship init fish | source
+    zoxide init fish | source
+end
+```
+
+Reload with `exec fish` after pulling.
+
+### Usage
+
+| Command | Effect |
+| --- | --- |
+| `z forge` | jump to the best frecency match for `forge` |
+| `z tv launchers` | multiple keywords, matched in any order |
+| `zi` | interactive fzf picker over tracked directories |
+| `zoxide query -ls` | list the whole database with scores |
+| `zoxide remove <dir>` | forget a directory |
+| `zoxide edit` | open the raw list in `$EDITOR` |
+
+Matching is case-insensitive on any part of the path, so `z dot` finds
+`~/dotfiles` without typing the full name.
+
+### Seeding project directories — `zseed`
+
+`fish/.config/fish/functions/zseed.fish` (autoloaded from
+`~/.config/fish/functions/`, symlinked by `stow fish`) primes the database so the
+first `z` isn't a guessing game:
+
+- adds a curated list of project roots (`~/dotfiles`, `~/stable-diffusion-webui-forge`,
+  `~/tv-launchers/*`, `~/mtkclient`, …)
+- auto-discovers any git repo sitting directly under `$HOME`
+- dedupes and reports a count
+
+```bash
+zseed
+# zseed: 14 project dirs added, 14 tracked in zoxide
+```
+
+Re-run it after creating or cloning a project; ordinary `cd`s are tracked
+automatically, so the seed is only a starting boost.
+
+### Optional knobs
+
+Add to `config.fish` if wanted:
+
+```fish
+set -gx _ZO_ECHO 1                            # print the directory after jumping
+set -gx _ZO_EXCLUDE_DIRS "$HOME:/tmp/*"       # colon-separated globs on Unix
+```
+
+### State
+
+| Path | Contents |
+| --- | --- |
+| `~/.local/share/zoxide/db.zo` | the frecency database |
+| `~/.config/zoxide/` | optional config (not used here) |
+
+Deleting `db.zo` resets history; nothing else breaks because the directories
+themselves are untouched.
 
 ---
 
@@ -156,8 +241,8 @@ hyprland/.config/hypr/hyprland.conf
 # 10. Minimal Recovery Command
 
 ```bash
-cd ~/.dotfiles
-stow hyprland waybar kitty
+cd ~/dotfiles
+stow hyprland kitty
 hyprctl reload
 ```
 
