@@ -138,7 +138,7 @@ Reload with `exec fish` after pulling.
 
 | Command | Effect |
 | --- | --- |
-| `z forge` | jump to the best frecency match for `forge` |
+|| `z forge` | jump to the best frecency match for `forge` |
 | `z tv launchers` | multiple keywords, matched in any order |
 | `zi` | interactive fzf picker over tracked directories |
 | `zoxide query -ls` | list the whole database with scores |

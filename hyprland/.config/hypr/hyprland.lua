@@ -54,7 +54,7 @@ hl.monitor({
 
 -- Set programs that you use
 local terminal    = "kitty"
-local fileManager = "nautilus"
+local fileManager = "atlas"
 local menu        = "fuzzel" -- optional; R is bound to the Noctalia v5 launcher
 
 -------------------
