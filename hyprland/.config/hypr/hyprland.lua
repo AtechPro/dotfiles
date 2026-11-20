@@ -77,7 +77,17 @@ hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 -- /dev/dri/card0 (NVIDIA 0000:01:00.0) and holds the dGPU out of runtime
 -- suspend, burning ~11 W at P8 even with no clients. Keeping the compositor
 -- off that card lets NVreg_DynamicPowerManagement=0x02 drop it to D3cold.
-hl.env("AQ_DRM_DEVICES", "/dev/dri/by-path/pci-0000:00:02.0-card")
+-- Colon-separated list: the by-path name's colons split it into bogus devices and abort
+-- the compositor. /dev/dri/igpu would be a colon-free alias from
+-- /etc/udev/rules.d/99-igpu-dri.rules -- NOT INSTALLED on this box, so plain card1 is used.
+--
+-- DISABLED 2026-11-20: the external monitor is wired to the dGPU (card0-DP-3), so
+-- restricting aquamarine to card1 made it invisible to Hyprland (log: "Found 1 GPUs").
+-- It also did not deliver the power win: the dGPU never suspended this boot
+-- (runtime_suspended_time=0) and Hyprland still held /dev/nvidia0 via nvidia_drm.modeset=1.
+-- Re-enable only after moving the monitor to a USB-C/Thunderbolt port that enumerates on
+-- card1 (verify with `hyprctl monitors`) AND dropping nvidia_drm.modeset=1 from the cmdline.
+-- hl.env("AQ_DRM_DEVICES", "/dev/dri/card1")
 
 -----------------------
 ----- PERMISSIONS -----
