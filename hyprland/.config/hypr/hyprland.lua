@@ -20,23 +20,10 @@
 --   eDP-1, 2560x1440@60, 0x0, 1.333333333334   # 1440p (Balanced)
 
 --   eDP-1, 3840x2160@60, 0x0, 2                 # 4K (Sharp)
-hl.monitor({
-    output = "eDP-1",
-    mode = "2560x1440@60",
---    mode = "1920x1080@60",
-    position = "0x0",
-    scale = 1.33
---    scale = 1
-})
-
-hl.monitor({
-    output   = "DP-3",
-    mode     = "preferred",
-    position = "auto-up",
-    scale    = 2,
-    bitdepth = 10,
-    cm       = "srgb",
-})
+-- Monitor layout lives in monitors.lua so a display GUI (nwg-displays) can own it.
+-- Same content as before: eDP-1 2560x1440@60 scale 1.33, DP-3 preferred@2x 10-bit sRGB.
+-- Rotate by editing `transform` there (0 normal / 1 = 90 / 2 = 180 / 3 = 270).
+require("monitors")
 
 -- Fallback for any other monitor (e.g. DP-4 from the nwg-displays layout)
 -- hl.monitor({
@@ -85,6 +72,12 @@ hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 
 hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
+
+-- Only expose the Intel iGPU to aquamarine. Without this Hyprland opens
+-- /dev/dri/card0 (NVIDIA 0000:01:00.0) and holds the dGPU out of runtime
+-- suspend, burning ~11 W at P8 even with no clients. Keeping the compositor
+-- off that card lets NVreg_DynamicPowerManagement=0x02 drop it to D3cold.
+hl.env("AQ_DRM_DEVICES", "/dev/dri/by-path/pci-0000:00:02.0-card")
 
 -----------------------
 ----- PERMISSIONS -----
@@ -337,10 +330,10 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 
 -- hyprctl keyword monitor no longer works on the new (Lua) parser in Hyprland
 -- >= 0.56 ("keyword can't work with non-legacy parsers"), so use hyprctl eval.
-hl.bind("CTRL + SHIFT + ALT + 1", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'1920x1080@60\', position = \'0x0\', scale = 1 })" && notify-send "Display" "Set to 1080p (Battery Saver)"'))
-hl.bind("CTRL + SHIFT + ALT + 2", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'2560x1440@60\', position = \'0x0\', scale = 1.33 })" && notify-send "Display" "Set to 1440p (Balanced)"'))
-hl.bind("CTRL + SHIFT + ALT + 3", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'preferred\', position = \'0x0\', scale = 2, bitdepth = 10, cm = \'srgb\' })" && notify-send "Display" "Set to UHD"'))
-hl.bind("CTRL + SHIFT + ALT + 4", hl.dsp.exec_cmd('hyprctl eval "hl.monitor({ output = \'eDP-1\', mode = \'preferred\', position = \'0x0\', scale = 2, bitdepth = 10, cm = \'dcip3\' })" && notify-send "Display" "Set to colour accuracy mode"'))
+hl.bind("CTRL + SHIFT + ALT + 1", hl.dsp.exec_cmd('edp-mode saver'))
+hl.bind("CTRL + SHIFT + ALT + 2", hl.dsp.exec_cmd('edp-mode balanced'))
+hl.bind("CTRL + SHIFT + ALT + 3", hl.dsp.exec_cmd('edp-mode uhd'))
+hl.bind("CTRL + SHIFT + ALT + 4", hl.dsp.exec_cmd('edp-mode p3'))
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
